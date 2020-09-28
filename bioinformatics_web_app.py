@@ -24,3 +24,6 @@ if __name__ == '__main__':
     
     
 # in cmd:   streamlit run nameoffile.py
+# a random comment
+print('hello world')
+#another change

@@ -11,8 +11,9 @@ import streamlit as st
 from Bio import SeqIO
 from Bio.Seq import Seq
 import SessionState
-
-
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 
@@ -32,17 +33,39 @@ def main():
         else:
             st.error('Need to upload file')
     if session_state.status == 'on':       
-        radio = st.radio("Select option to view", ('DNA sequence','RNA sequence', 'Protein sequence'))
+        radio = st.radio("Select option to view", ('DNA analysis','RNA analysis', 'Protein analysis'))
         seq_record = SeqIO.read(file, "fasta")
         sequence = str(seq_record.seq)
-        seq_ob = Seq(sequence)
+        seq_ob = Seq(sequence).upper()
         transcribed = seq_ob.transcribe()
         translated = seq_ob.translate()
-        if radio == 'DNA sequence':
-            st.write(seq_ob)
-        elif radio == 'RNA sequence':
+        if radio == 'DNA analysis':
+            st.write('DNA sequence:  ', seq_ob)
+            lenght = str(len(seq_ob))
+            section = '### Sequence length:  ' + "**" + str(len(seq_ob)) + "**"
+            st.markdown(section)
+            st.write("")
+            G = [seq_ob.count('G')]
+            A = [seq_ob.count('A')]
+            T = [seq_ob.count('T')]
+            C = [seq_ob.count('C')]
+            GC_content = round((G[0]+C[0])/len(seq_ob)*100, 2)
+            AT_content = round((A[0]+T[0])/len(seq_ob)*100, 2)
+            st.write('GC content: ', GC_content, '%')
+            st.write('AT content: ', AT_content, '%')
+            rows = ['G', 'A', 'T', 'C']
+            df = pd.DataFrame(np.array([G,A,T,C]), columns = ['Count'], index = rows)
+            st.markdown("### Nucleotide count:")
+            st.dataframe(data=df, width=1000, height=1000)
+            #hide auto-error message with matplotlib
+            st.set_option('deprecation.showPyplotGlobalUse', False)
+            #plot bar graph of nucleotide frequencies
+            plt.bar(rows, [G[0],A[0],T[0],C[0]])
+            plt.title('Nucleotide frequencies')
+            st.pyplot()
+        elif radio == 'RNA analysis':
             st.write(transcribed)
-        elif radio == 'Protein sequence':
+        elif radio == 'Protein analysis':
             st.write(translated)
         
    
@@ -51,7 +74,7 @@ def main():
 
    
             
- 
+# Do hydrophobic/ hydrophillic regions of protein sequence?
 
         
         
@@ -78,6 +101,8 @@ if __name__ == '__main__':
     
 
     
-    
-# TO RUN THE FILE, in cmd typ:   streamlit run nameoffile.py
+# chdir C:/Users/oscar/OneDrive/Documents/python-scripts/Bioinformatics-web-app
+# streamlit run bioinformatics_web_app.py
 
+#TO DO
+# tidy up and comment code

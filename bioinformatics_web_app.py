@@ -10,8 +10,14 @@ Created on Mon Sep 28 12:24:19 2020
 import streamlit as st
 from Bio import SeqIO
 from Bio.Seq import Seq
+import SessionState
 
 
+
+
+
+
+#@st.cache(suppress_st_warning=True)
 def main():
     """bioinformatics_web_app"""
     st.title('Sequence Analysis')
@@ -19,31 +25,30 @@ def main():
     #st.subheader('This is a subheader')
     st.set_option('deprecation.showfileUploaderEncoding', False)
     file = st.file_uploader("Upload FASTA file of DNA", type=["fasta", "txt"])
-    
+    session_state = SessionState.get(status = 'off')
     if st.button("submit"):
         if file is not None:
-            radio = st.radio("Select option to view", ('RNA sequence','DNA sequence', 'Protein sequence'))
-            seq_record = SeqIO.read(file, "fasta")
-            sequence = str(seq_record.seq)
-            seq_ob = Seq(sequence)
-            transcribed = seq_ob.transcribe()
-            translated = seq_ob.translate()
-            if radio == 'DNA sequence':
-                st.write(seq_ob)
-            elif radio == 'RNA sequence':
-                st.write(transcribed)
-            elif radio == 'Protein sequence':
-                st.write(translated)
-                print(translated)
+            session_state.status = 'on'
+        else:
+            st.error('Need to upload file')
+    if session_state.status == 'on':       
+        radio = st.radio("Select option to view", ('DNA sequence','RNA sequence', 'Protein sequence'))
+        seq_record = SeqIO.read(file, "fasta")
+        sequence = str(seq_record.seq)
+        seq_ob = Seq(sequence)
+        transcribed = seq_ob.transcribe()
+        translated = seq_ob.translate()
+        if radio == 'DNA sequence':
+            st.write(seq_ob)
+        elif radio == 'RNA sequence':
+            st.write(transcribed)
+        elif radio == 'Protein sequence':
+            st.write(translated)
         
-
-
-
+   
             
             
-            
-            #else:
-                #st.error("Need to upload file")
+
    
             
  

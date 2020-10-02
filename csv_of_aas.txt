@@ -1,0 +1,21 @@
+Full_name,Abbreviation
+Alanine,A
+Arginine,R
+Asparagine,N
+Aspartic acid,D
+Cysteine,C
+Glutamine,Q
+Glutamic,E
+Glycine,G
+Histidine,H
+Isoleucine,I
+Leucine,L
+Lysine,K
+Methionine,M
+Phenylalanine,F
+Proline,P
+Serine,S
+Threonine,T
+Tryptophan,W
+Tyrosine,Y
+Valine,V
